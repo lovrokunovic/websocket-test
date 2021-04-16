@@ -1,0 +1,62 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Websocket test</title>
+
+</head>
+
+<body>
+    <br><br>
+    <div id="log"></div>
+    <br>
+    <input type="text" placeholder="Your message here..." id="message">
+    <button id="sendMessage">
+        Send
+    </button>
+
+    <script>
+        {
+            try {
+                let sock = new WebSocket("ws://localhost:8080", "echo-protocol");
+                sock.onopen = () => {
+                    console.log("Socket opened")
+                    let message = "Hello";
+                    sock.send(message);
+                }
+
+                sock.onerror = (error) => { console.log(error) }
+
+                let log = document.getElementById("log");
+                sock.onmessage = (event) => {
+                    let json = event.data;
+                    console.log(event);
+                    log.innerHTML += json + "<br>";
+                }
+
+                let sendbutton = document.getElementById("sendMessage");
+                var klik = () => {
+                    let text = document.getElementById("message").value;
+                    console.log(text);
+                    sock.send(text);
+                }
+                sendbutton.addEventListener("click", klik);
+
+            } catch (err) {
+                console.log(err);
+            }
+
+        }
+    </script>
+    <style>
+        div {
+            overflow: auto;
+            height: 600px;
+            width: 800px;
+            border: 5px solid black;
+        }
+    </style>
+
+</body>
+
+</html>
